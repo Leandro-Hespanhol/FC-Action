@@ -7,14 +7,14 @@ import (
 
 func (bu *BidUseCase) FindBidByAuctionId(
 	ctx context.Context, auctionId string) ([]BidOutputDTO, *internal_error.InternalError) {
-	bidList, err := bu.BidRepository.FindBidByAuctionId(ctx, auctionId)
+	bidEntities, err := bu.BidRepository.FindBidByAuctionId(ctx, auctionId)
 	if err != nil {
 		return nil, err
 	}
 
-	var bidOutputList []BidOutputDTO
-	for _, bid := range bidList {
-		bidOutputList = append(bidOutputList, BidOutputDTO{
+	var bidOutputDTOs []BidOutputDTO
+	for _, bid := range bidEntities {
+		bidOutputDTOs = append(bidOutputDTOs, BidOutputDTO{
 			Id:        bid.Id,
 			UserId:    bid.UserId,
 			AuctionId: bid.AuctionId,
@@ -23,7 +23,7 @@ func (bu *BidUseCase) FindBidByAuctionId(
 		})
 	}
 
-	return bidOutputList, nil
+	return bidOutputDTOs, nil
 }
 
 func (bu *BidUseCase) FindWinningBidByAuctionId(
@@ -33,13 +33,11 @@ func (bu *BidUseCase) FindWinningBidByAuctionId(
 		return nil, err
 	}
 
-	bidOutput := &BidOutputDTO{
+	return &BidOutputDTO{
 		Id:        bidEntity.Id,
 		UserId:    bidEntity.UserId,
 		AuctionId: bidEntity.AuctionId,
 		Amount:    bidEntity.Amount,
 		Timestamp: bidEntity.Timestamp,
-	}
-
-	return bidOutput, nil
+	}, nil
 }
